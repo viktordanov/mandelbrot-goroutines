@@ -28,12 +28,10 @@ func writeBytesToImage(data []uint8, size mandelbrot.Size) error {
 		return err
 	}
 
+	// Don't forget to close files
+	defer outputFile.Close()
+
 	// Encode takes a writer interface and an image interface
 	// We pass it the File and the RGBA
-	png.Encode(outputFile, myImage)
-
-	// Don't forget to close files
-	outputFile.Close()
-
-	return nil
+	return png.Encode(outputFile, myImage)
 }
