@@ -8,13 +8,6 @@ import (
 	"runtime"
 )
 
-func char(n byte) string {
-	if float64(n) < mandelbrot.Threshold/2 {
-		return " "
-	}
-	return "*"
-}
-
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
