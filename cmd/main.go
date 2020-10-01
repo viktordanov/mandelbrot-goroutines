@@ -3,9 +3,11 @@ package main
 import (
 	"image"
 	"image/png"
-	"mandelbrot/mandelbrot"
+
 	"os"
 	"runtime"
+
+	"github.com/viktordanov/mandelbrot-goroutines/mandelbrot"
 )
 
 func main() {
