@@ -3,13 +3,13 @@ package main
 import (
 	"image"
 	"image/png"
-	"mandelbrot/pkg"
+	"mandelbrot/mandelbrot"
 	"os"
 	"runtime"
 )
 
 func char(n byte) string {
-	if float64(n) < pkg.Threshold/2 {
+	if float64(n) < mandelbrot.Threshold/2 {
 		return " "
 	}
 	return "*"
@@ -18,13 +18,13 @@ func char(n byte) string {
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	dimensions := pkg.Size{X: 12000, Y: 8000}
+	dimensions := mandelbrot.Size{X: 12000, Y: 8000}
 	canvas := make([]uint8, int(dimensions.X*dimensions.Y)*4)
-	pkg.Mandelbrot(canvas, dimensions, 2000)
+	mandelbrot.Mandelbrot(canvas, dimensions, 2000)
 	writeBytesToImage(canvas, dimensions)
 }
 
-func writeBytesToImage(data []uint8, size pkg.Size) {
+func writeBytesToImage(data []uint8, size mandelbrot.Size) {
 	// Create a blank image 100x200 pixels
 	myImage := image.NewRGBA(image.Rect(0, 0, int(size.X), int(size.Y)))
 	myImage.Pix = data
