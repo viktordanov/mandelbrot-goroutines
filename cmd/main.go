@@ -17,7 +17,7 @@ func main() {
 	writeBytesToImage(canvas, dimensions)
 }
 
-func writeBytesToImage(data []uint8, size mandelbrot.Size) {
+func writeBytesToImage(data []uint8, size mandelbrot.Size) error {
 	// Create a blank image 100x200 pixels
 	myImage := image.NewRGBA(image.Rect(0, 0, int(size.X), int(size.Y)))
 	myImage.Pix = data
@@ -25,6 +25,7 @@ func writeBytesToImage(data []uint8, size mandelbrot.Size) {
 	outputFile, err := os.Create("test.png")
 	if err != nil {
 		// Handle error
+		return err
 	}
 
 	// Encode takes a writer interface and an image interface
@@ -33,4 +34,6 @@ func writeBytesToImage(data []uint8, size mandelbrot.Size) {
 
 	// Don't forget to close files
 	outputFile.Close()
+
+	return nil
 }
