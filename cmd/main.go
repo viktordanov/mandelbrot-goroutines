@@ -15,7 +15,6 @@ func main() {
 	canvas := make([]uint8, int(dimensions.X*dimensions.Y)*4)
 	mandelbrot.Mandelbrot(canvas, dimensions, 2000)
 	err := writeBytesToImage(canvas, dimensions)
-
 	if err != nil {
 		panic(err)
 	}
