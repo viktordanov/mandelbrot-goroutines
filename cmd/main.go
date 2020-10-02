@@ -3,41 +3,40 @@ package main
 import (
 	"image"
 	"image/png"
-	"mandelbrot/pkg"
+
 	"os"
 	"runtime"
-)
 
-func char(n byte) string {
-	if float64(n) < pkg.Threshold/2 {
-		return " "
-	}
-	return "*"
-}
+	"github.com/viktordanov/mandelbrot-goroutines/mandelbrot"
+)
 
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	dimensions := pkg.Size{X: 12000, Y: 8000}
+	dimensions := mandelbrot.Size{X: 12000, Y: 8000}
 	canvas := make([]uint8, int(dimensions.X*dimensions.Y)*4)
-	pkg.Mandelbrot(canvas, dimensions, 2000)
-	writeBytesToImage(canvas, dimensions)
+	mandelbrot.Mandelbrot(canvas, dimensions, 2000)
+	err := writeBytesToImage(canvas, dimensions, "test.png")
+	if err != nil {
+		panic(err)
+	}
 }
 
-func writeBytesToImage(data []uint8, size pkg.Size) {
+func writeBytesToImage(data []uint8, size mandelbrot.Size, fileName string) error {
 	// Create a blank image 100x200 pixels
-	myImage := image.NewRGBA(image.Rect(0, 0, int(size.X), int(size.Y)))
-	myImage.Pix = data
+	img := image.NewRGBA(image.Rect(0, 0, int(size.X), int(size.Y)))
+	img.Pix = data
 	// outputFile is a File type which satisfies Writer interface
-	outputFile, err := os.Create("test.png")
+	outputFile, err := os.Create(fileName)
 	if err != nil {
 		// Handle error
+		return err
 	}
+
+	// Don't forget to close files
+	defer outputFile.Close()
 
 	// Encode takes a writer interface and an image interface
 	// We pass it the File and the RGBA
-	png.Encode(outputFile, myImage)
-
-	// Don't forget to close files
-	outputFile.Close()
+	return png.Encode(outputFile, img)
 }
