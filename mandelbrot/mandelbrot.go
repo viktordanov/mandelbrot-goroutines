@@ -7,29 +7,25 @@ import (
 	"sync"
 )
 
+// Size defines the size.
 type Size struct {
 	X float64
 	Y float64
 }
 
-const Threshold float64 = 2
+// Global config consts.
+const (
+	Threshold float64 = 2
+	ReStart   float64 = -2.0
+	ReEnd     float64 = 1.0
+	ImStart   float64 = -1.0
+	ImEnd     float64 = 1.0
+	OffsetX   float64 = 750.25 / 6000.0
+	OffsetY   float64 = 1685.1851 / 4000.0
+	Scale     float64 = 0.25
+)
 
-// const RE_START float64 = -2.0
-// const RE_END float64 = 1.0
-// const IM_START float64 = -1.0
-// const IM_END float64 = 1.0
-
-const RE_START float64 = -2.0
-const RE_END float64 = 1.0
-const IM_START float64 = -1.0
-const IM_END float64 = 1.0
-
-// const OFFSET_X float64 = 802.0 / 1920.0
-// const OFFSET_Y float64 = 455.0 / 1080.0
-const OFFSET_X float64 = 750.25 / 6000.0
-const OFFSET_Y float64 = 1685.1851 / 4000.0
-const SCALE float64 = 0.25
-
+// Instructions contains all the instructions.
 type Instructions struct {
 	r          int
 	rMax       int
@@ -38,27 +34,39 @@ type Instructions struct {
 	size       Size
 	iterations int
 }
+
+// Pixel is a pixel in an image.
 type Pixel struct {
 	index int
 	data  [4]uint8
 }
 
-var test float64
-var counter float64
+var (
+	test    float64
+	counter float64
+)
 
 func chunkWorker(ins Instructions, out chan<- Pixel, wg *sync.WaitGroup) {
 	for r := ins.r; r < ins.rMax; r++ {
 		for i := ins.i; i < ins.iMax; i++ {
 			var z complex128
-			c := complex(RE_START+(OFFSET_X*(RE_END-RE_START))+(float64(r)/ins.size.X)*(RE_END-RE_START)*SCALE,
-				IM_START+(OFFSET_Y*(IM_END-IM_START))+(float64(i)/ins.size.Y)*(IM_END-IM_START)*SCALE)
+			c := complex(ReStart+(OffsetX*(ReEnd-ReStart))+(float64(r)/ins.size.X)*(ReEnd-ReStart)*Scale,
+				ImStart+(OffsetY*(ImEnd-ImStart))+(float64(i)/ins.size.Y)*(ImEnd-ImStart)*Scale)
 			var n float64
 			for n = 0; int(n) < ins.iterations && cmplx.Abs(z) <= Threshold; n++ {
 				z = z*z + c
 			}
 
-			n = n - math.Log(math.Log(cmplx.Abs(z))/math.Log(255))/math.Log(2.0)
-			out <- Pixel{r*4 + i*int(ins.size.X*4), [4]byte{byte(n * 45000 / float64(ins.iterations)), 0, byte(n * 350 / float64(ins.iterations)), 255}}
+			n -= math.Log(math.Log(cmplx.Abs(z))/math.Log(255)) / math.Log(2.0)
+			out <- Pixel{
+				r*4 + i*int(ins.size.X*4),
+				[4]byte{
+					byte(n * 45000 / float64(ins.iterations)),
+					0,
+					byte(n * 350 / float64(ins.iterations)),
+					255,
+				},
+			}
 		}
 	}
 	fmt.Printf("Progress: %f\n", counter/test)
@@ -66,6 +74,7 @@ func chunkWorker(ins Instructions, out chan<- Pixel, wg *sync.WaitGroup) {
 	wg.Done()
 }
 
+// Mandelbrot draws the Mandelbrot fractal on the provided canvas.
 func Mandelbrot(canvas []uint8, size Size, iterations int) {
 	var wg sync.WaitGroup
 	out := make(chan Pixel, int(size.X*size.Y))
