@@ -55,8 +55,16 @@ func chunkWorker(ins Instructions, out chan<- Pixel, wg *sync.WaitGroup) {
 				z = z*z + c
 			}
 
-			n = n - math.Log(math.Log(cmplx.Abs(z))/math.Log(255))/math.Log(2.0)
-			out <- Pixel{r*4 + i*int(ins.size.X*4), [4]byte{byte(n * 45000 / float64(ins.iterations)), 0, byte(n * 350 / float64(ins.iterations)), 255}}
+			n -= math.Log(math.Log(cmplx.Abs(z))/math.Log(255)) / math.Log(2.0)
+			out <- Pixel{
+				r*4 + i*int(ins.size.X*4),
+				[4]byte{
+					byte(n * 45000 / float64(ins.iterations)),
+					0,
+					byte(n * 350 / float64(ins.iterations)),
+					255,
+				},
+			}
 		}
 	}
 	fmt.Printf("Progress: %f\n", counter/test)
