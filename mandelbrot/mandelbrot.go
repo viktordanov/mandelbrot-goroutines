@@ -13,16 +13,16 @@ type Size struct {
 	Y float64
 }
 
+// Global config consts.
 const (
-	// Threshold defines threshold.
 	Threshold float64 = 2
-	RE_START  float64 = -2.0
-	RE_END    float64 = 1.0
-	IM_START  float64 = -1.0
-	IM_END    float64 = 1.0
-	OFFSET_X  float64 = 750.25 / 6000.0
-	OFFSET_Y  float64 = 1685.1851 / 4000.0
-	SCALE     float64 = 0.25
+	ReStart   float64 = -2.0
+	ReEnd     float64 = 1.0
+	ImStart   float64 = -1.0
+	ImEnd     float64 = 1.0
+	OffsetX   float64 = 750.25 / 6000.0
+	OffsetY   float64 = 1685.1851 / 4000.0
+	Scale     float64 = 0.25
 )
 
 // Instructions contains all the instructions.
@@ -48,8 +48,8 @@ func chunkWorker(ins Instructions, out chan<- Pixel, wg *sync.WaitGroup) {
 	for r := ins.r; r < ins.rMax; r++ {
 		for i := ins.i; i < ins.iMax; i++ {
 			var z complex128
-			c := complex(RE_START+(OFFSET_X*(RE_END-RE_START))+(float64(r)/ins.size.X)*(RE_END-RE_START)*SCALE,
-				IM_START+(OFFSET_Y*(IM_END-IM_START))+(float64(i)/ins.size.Y)*(IM_END-IM_START)*SCALE)
+			c := complex(ReStart+(OffsetX*(ReEnd-ReStart))+(float64(r)/ins.size.X)*(ReEnd-ReStart)*Scale,
+				ImStart+(OffsetY*(ImEnd-ImStart))+(float64(i)/ins.size.Y)*(ImEnd-ImStart)*Scale)
 			var n float64
 			for n = 0; int(n) < ins.iterations && cmplx.Abs(z) <= Threshold; n++ {
 				z = z*z + c
