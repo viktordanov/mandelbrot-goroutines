@@ -64,6 +64,7 @@ func chunkWorker(ins Instructions, out chan<- Pixel, wg *sync.WaitGroup) {
 	wg.Done()
 }
 
+// Mandelbrot draws the Mandelbrot fractal on the provided canvas.
 func Mandelbrot(canvas []uint8, size Size, iterations int) {
 	var wg sync.WaitGroup
 	out := make(chan Pixel, int(size.X*size.Y))
