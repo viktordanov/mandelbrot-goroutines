@@ -7,29 +7,25 @@ import (
 	"sync"
 )
 
+// Size defines the size.
 type Size struct {
 	X float64
 	Y float64
 }
 
-const Threshold float64 = 2
+const (
+	// Threshold defines threshold.
+	Threshold float64 = 2
+	RE_START  float64 = -2.0
+	RE_END    float64 = 1.0
+	IM_START  float64 = -1.0
+	IM_END    float64 = 1.0
+	OFFSET_X  float64 = 750.25 / 6000.0
+	OFFSET_Y  float64 = 1685.1851 / 4000.0
+	SCALE     float64 = 0.25
+)
 
-// const RE_START float64 = -2.0
-// const RE_END float64 = 1.0
-// const IM_START float64 = -1.0
-// const IM_END float64 = 1.0
-
-const RE_START float64 = -2.0
-const RE_END float64 = 1.0
-const IM_START float64 = -1.0
-const IM_END float64 = 1.0
-
-// const OFFSET_X float64 = 802.0 / 1920.0
-// const OFFSET_Y float64 = 455.0 / 1080.0
-const OFFSET_X float64 = 750.25 / 6000.0
-const OFFSET_Y float64 = 1685.1851 / 4000.0
-const SCALE float64 = 0.25
-
+// Instructions contains all the instructions.
 type Instructions struct {
 	r          int
 	rMax       int
@@ -38,6 +34,8 @@ type Instructions struct {
 	size       Size
 	iterations int
 }
+
+// Pixel is a pixel in an image.
 type Pixel struct {
 	index int
 	data  [4]uint8
