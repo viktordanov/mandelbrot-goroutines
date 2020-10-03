@@ -1,6 +1,6 @@
 # mandelbrot-goroutines
 
-![](./test.png)
+![](./example.png)
 
 This small project is an attempt at optimizing a mandelbrot plotter using chunking and goroutines as a means of parallelism
 
