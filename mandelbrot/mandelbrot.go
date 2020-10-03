@@ -41,8 +41,10 @@ type Pixel struct {
 	data  [4]uint8
 }
 
-var test float64
-var counter float64
+var (
+	test    float64
+	counter float64
+)
 
 func chunkWorker(ins Instructions, out chan<- Pixel, wg *sync.WaitGroup) {
 	for r := ins.r; r < ins.rMax; r++ {
